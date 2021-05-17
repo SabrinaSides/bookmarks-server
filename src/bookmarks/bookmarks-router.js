@@ -4,6 +4,7 @@ const bodyParser = express.json()
 const { v4: uuid } = require('uuid')
 const logger = require('../logger')
 const bookmarks = require('../store')
+const { isWebUri } = require('valid-url')
 
 bookmarkRouter
     .route('/bookmarks')
@@ -18,12 +19,12 @@ bookmarkRouter
             return res.status(400).send('Invalid data')
         }
 
-        if(!url){
+        if(!url || !isWebUri(url)){
             logger.error('URL is required');
-            return res.status(400).send('Invalid data')
+            return res.status(400).send('Invalid data, need complete URL')
         }
 
-        if(!rating){
+        if(!rating || !Number.isInteger(rating) || rating < 0 || rating > 5){
             logger.error('Rating is required');
             return res.status(400).send('Invalid data')
         }
