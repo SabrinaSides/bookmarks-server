@@ -12,8 +12,20 @@ const BookmarksService = {
     },
 
     //insert bookmark
+    insertBookmark(knex, newBookmark){
+        return knex
+                .insert(newBookmark)
+                .into('bookmarks_data')
+                .returning('*')
+                .then(rows => {
+                    return rows[0]
+                })
+    },
 
     //delete bookmark
+    deleteBookmark(knex, id){
+        return knex.from('bookmarks_data').where( { id }).delete()
+    }
 
     //update bookmark
 
